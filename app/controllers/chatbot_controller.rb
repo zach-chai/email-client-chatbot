@@ -4,6 +4,13 @@ class ChatbotController < ApplicationController
 
   # POST /chatbots
   def message
-    @res = "Hello user"
+    msg = params[:message] || 'Hello user'
+    msg = msg.gsub(/[^0-9a-z ]/i, '')
+
+    @res = msg
+  end
+
+  def test
+
   end
 end

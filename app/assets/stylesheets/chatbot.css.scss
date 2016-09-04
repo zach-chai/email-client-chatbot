@@ -1,0 +1,20 @@
+.test {
+  height: 100%;
+
+  .list-wrapper {
+    height: 400px;
+  }
+
+  ul {
+    list-style-type: none;
+    height: auto;
+  }
+
+  .input-wrapper {
+    display: inline-block;
+  }
+
+  .submit-wrapper {
+    display: inline-block;
+  }
+}
