@@ -18,13 +18,19 @@ class ChatbotController < ApplicationController
   private
 
   FETCH_KEYS = ['fetch', 'get', 'find', 'open', 'show', 'view']
+  EMAIL_TYPES = ['unread', 'recent', 'today', 'yesterday']
+  #TODO detect if email address and fetch those emails
 
   def parse_rules(msg)
     msg = Textoken(msg.downcase).tokens
     if msg.include? 'help'
       'help'
     elsif include_any? msg, FETCH_KEYS
-      'fetch email'
+      if email_type = include_any?(msg, EMAIL_TYPES)
+        "fetch emails #{email_type}"
+      else
+        "fetch emails default"
+      end
     else
       msg
     end
@@ -33,7 +39,7 @@ class ChatbotController < ApplicationController
   def include_any?(msg, keys)
     keys.each do |key|
       if msg.include? key
-        return true
+        return key
       end
     end
     false
