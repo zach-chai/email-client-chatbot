@@ -1,5 +1,16 @@
 class ChatbotController < ApplicationController
 
+  FETCH_TOKENS = ['fetch', 'get', 'find', 'open', 'show', 'view', 'tell', 'give', 'read']
+  EMAIL_TYPES = ['unread', 'recent', 'today', 'yesterday', 'morning', 'afternoon', 'evening']
+
+  FETCH_SETS = [
+    [['what'], ['emails'], EMAIL_TYPES],
+    [['you'], ['have'], ['emails']],
+    [FETCH_TOKENS, ['emails'], EMAIL_TYPES],
+    [FETCH_TOKENS, EMAIL_TYPES, ['emails']]
+  ]
+  #TODO detect if email address and fetch those emails
+
   # {message: "message to chatbot"}
 
   # POST /chatbots
@@ -7,8 +18,9 @@ class ChatbotController < ApplicationController
     msg = params[:message] || 'Hello user'
     msg = Textoken(msg.downcase).tokens
 
-    @res = parse_rules msg
-    @res = "#{@res}: #{ordered_tokens_heuristic(msg, [FETCH_TOKENS, EMAIL_TYPES])}"
+    # @res = parse_rules msg
+    @res = parse_sets msg
+    # @res = "#{@res}: #{ordered_tokens_heuristic(msg, [FETCH_TOKENS, EMAIL_TYPES])}"
 
     @res
   end
@@ -19,9 +31,6 @@ class ChatbotController < ApplicationController
 
   private
 
-  FETCH_TOKENS = ['fetch', 'get', 'find', 'open', 'show', 'view', 'what', 'tell', 'give', 'read']
-  EMAIL_TYPES = ['unread', 'recent', 'today', 'yesterday']
-  #TODO detect if email address and fetch those emails
 
   def parse_rules(msg)
     if msg.include? 'help'
@@ -37,6 +46,18 @@ class ChatbotController < ApplicationController
     else
       msg
     end
+  end
+
+  def parse_sets(msg)
+    counter = 0
+    FETCH_SETS.each do |fetch_set|
+      if ordered_tokens_heuristic(msg, fetch_set) == 1.0
+        return "fetch set #{counter}"
+      else
+        counter += 1
+      end
+    end
+    msg
   end
 
   def include_any?(msg, tokens)
@@ -65,7 +86,11 @@ class ChatbotController < ApplicationController
     tokens_length = tokens.length
     msg.each do |msg_token|
       if tokens.first.include? msg_token
-        tokens.shift
+        tokens = tokens.delete(0)
+      end
+      if tokens.nil?
+        tokens = []
+        break
       end
     end
     (tokens_length - tokens.length).to_f / tokens_length.to_f
