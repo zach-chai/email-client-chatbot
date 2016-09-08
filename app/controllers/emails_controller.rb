@@ -2,7 +2,7 @@ class EmailsController < ApplicationController
   before_action :set_email, only: [:show, :edit, :update, :destroy]
 
   def demo
-
+    @emails = Email.all
   end
 
   # GET /emails

@@ -1,0 +1,24 @@
+<div class="page-wrapper demo col-md-12">
+  <div class="row">
+    <div class="email-list col-md-3">
+      <ul class="list-group" id="email-list">
+        <% @emails.each do |email| %>
+          <li class="list-group-item"><%= email.name %></li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      email here
+    </div>
+    <div class="col-md-3">
+      <ul id="chatbot-messages">
+        <li>Hello user</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 offset-md-9">
+      <button id="chatbot-submit" class="btn btn-primary" type="button">Send</button>
+    </div>
+  </div>
+</div>
