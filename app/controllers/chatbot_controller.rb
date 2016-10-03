@@ -51,8 +51,8 @@ class ChatbotController < ApplicationController
   def parse_sets(msg)
     counter = 0
     FETCH_SETS.each do |fetch_set|
-      if ordered_tokens_heuristic(msg, fetch_set) == 1.0
-        return "fetch set #{counter}"
+      if matches = ordered_tokens_exist?(msg, fetch_set)
+        return "fetch set #{counter} with matches #{matches}"
       else
         counter += 1
       end
@@ -70,15 +70,31 @@ class ChatbotController < ApplicationController
   end
 
   def ordered_tokens_exist?(msg, tokens, strict = false)
-    msg.each do |msg_token|
-      if tokens.first.include? msg_token
-        tokens.shift
+    matches = []
+    if strict
+      msg.each do |msg_token|
+        temp_tokens = tokens.clone
+        byebug
+        if temp_tokens.first.include? msg_token
+          temp_tokens.shift
+          matches << msg_token
+        end
+        if temp_tokens.empty?
+          matches
+        end
       end
-    end
-    if tokens.empty?
-      true
-    else
       false
+    else
+      tokens.each do |token_array|
+        if token_array.include? msg.first
+          matches << msg.shift
+        end
+      end
+      if matches.empty?
+        false
+      else
+        matches
+      end
     end
   end
 
