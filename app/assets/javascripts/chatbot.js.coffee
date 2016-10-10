@@ -1,7 +1,14 @@
+update_emails_list = (data) ->
+  $("#email-list").empty()
+  for email in data
+    $("#email-list").append "<li class=\"list-group-item\" data-id=\"#{email.id}\>#{email.subject}</li>"
+
 send = ->
    msg = $("#chatbot-message").val()
-   $.get "/chatbot?message=#{msg}", (data) ->
-      $("#message-list").append "<li>#{data.message}</li>"
+   $.get "/chatbot/emails?message=#{msg}", (data) ->
+      $("#chatbot-messages").append "<li>#{data.msg}</li>"
+      if data.msg != "I don't understand"
+        update_emails_list(data.emails)
 
 clearChat = ->
    $("#chatbot-message").val ''
