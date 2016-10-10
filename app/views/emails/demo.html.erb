@@ -3,7 +3,7 @@
     <div class="email-list col-md-3">
       <ul class="list-group" id="email-list">
         <% @emails.each do |email| %>
-          <li class="list-group-item"><%= email.name %></li>
+          <li class="list-group-item"><%= email.subject %></li>
         <% end %>
       </ul>
     </div>

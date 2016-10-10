@@ -1,9 +1,23 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  body: MyText
+email1:
+  subject: CCSS Coffee Social Today
+  sender: john@carleton.ca
+  body: "
+  The next CCSS Undergraduate Coffee Social will take place today at 2:30pm. Everyone is welcome!
+  "
+  created_at: <%= Time.now %>
 
-two:
-  name: MyString
-  body: MyText
+email2:
+  subject: Tech Talks Today
+  sender: amanda@cunet.carleton.ca
+  body: "
+  The CCSS is hosting two back-to-back tech talks TODAY from 5:30-7:00. These are great talks for students in all years.
+  "
+  created_at: <%= Time.now %>
+
+email3:
+  subject: Microsoft recruiting event
+  sender: campus_recruiting@carleton.ca
+  body: You're invited to attend Microsoft's upcoming Tech Talk and Coding Competition!
+  created_at: <%= Time.now - 1.days %>

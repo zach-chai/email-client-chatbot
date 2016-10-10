@@ -2,15 +2,16 @@ class ChatbotController < ApplicationController
 
   FETCH_TOKENS = ['fetch', 'get', 'find', 'open', 'show', 'view', 'give', 'read']
   DELETE_TOKENS = ['delete', 'remove']
-  EMAIL_TYPES = ['unread', 'recent', 'today', 'yesterday', 'morning', 'afternoon', 'evening', 'all']
+  EMAIL_TYPES = ['unread', 'recent', 'today', 'yesterday', 'all']
 
-  FETCH_SETS = [
+  MSG_SET = [
     [['what'], ['emails'], EMAIL_TYPES],
     [['you'], ['emails'], ['have']],
     [FETCH_TOKENS, ['emails'], EMAIL_TYPES],
     [FETCH_TOKENS, EMAIL_TYPES, ['emails']],
+    [FETCH_TOKENS, ['emails']],
     [DELETE_TOKENS, ['email']],
-    [DELETE_TOKENS, EMAIL_TYPES, ['emails']],
+    [DELETE_TOKENS, EMAIL_TYPES, ['emails']]
   ]
   #TODO detect if email address and fetch those emails
 
@@ -28,12 +29,48 @@ class ChatbotController < ApplicationController
     @res
   end
 
+  def emails
+    msg = params[:message] || 'Hello user'
+    msg = Textoken(msg.downcase).tokens
+
+    msg_set, type = get_msg_set(msg)
+
+    if msg_set == false
+      render json: {msg: "I don't understand"}, status: :ok
+      return
+    elsif msg_set < 5
+      if type.include? "today"
+        @emails = Email.where("created_at > (?)", Time.now.beginning_of_day)
+      else
+        @emails = Email.all
+      end
+    elsif msg_set < 7
+      if type.include? "today"
+        Email.where("created_at > (?)", Time.now.beginning_of_day).destroy_all
+      end
+    else
+      render json: {msg: "I don't understand"}, status: :ok
+      return
+    end
+  end
+
   def test
 
   end
 
   private
 
+  def get_msg_set(msg)
+    counter = 0
+    MSG_SET.each do |fetch_set|
+      if matches = ordered_tokens_exist?(msg, fetch_set, true)
+        return counter, matches
+      else
+        counter += 1
+      end
+    end
+    false
+  end
 
   def parse_rules(msg)
     if msg.include? 'help'
@@ -53,7 +90,7 @@ class ChatbotController < ApplicationController
 
   def parse_sets(msg)
     counter = 0
-    FETCH_SETS.each do |fetch_set|
+    MSG_SET.each do |fetch_set|
       if matches = ordered_tokens_exist?(msg, fetch_set, true)
         return "fetch set #{counter} with matches #{matches}"
       else
