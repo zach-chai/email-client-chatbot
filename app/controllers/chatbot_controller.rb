@@ -1,13 +1,16 @@
 class ChatbotController < ApplicationController
 
-  FETCH_TOKENS = ['fetch', 'get', 'find', 'open', 'show', 'view', 'tell', 'give', 'read']
-  EMAIL_TYPES = ['unread', 'recent', 'today', 'yesterday', 'morning', 'afternoon', 'evening']
+  FETCH_TOKENS = ['fetch', 'get', 'find', 'open', 'show', 'view', 'give', 'read']
+  DELETE_TOKENS = ['delete', 'remove']
+  EMAIL_TYPES = ['unread', 'recent', 'today', 'yesterday', 'morning', 'afternoon', 'evening', 'all']
 
   FETCH_SETS = [
     [['what'], ['emails'], EMAIL_TYPES],
-    [['you'], ['have'], ['emails']],
+    [['you'], ['emails'], ['have']],
     [FETCH_TOKENS, ['emails'], EMAIL_TYPES],
-    [FETCH_TOKENS, EMAIL_TYPES, ['emails']]
+    [FETCH_TOKENS, EMAIL_TYPES, ['emails']],
+    [DELETE_TOKENS, ['email']],
+    [DELETE_TOKENS, EMAIL_TYPES, ['emails']],
   ]
   #TODO detect if email address and fetch those emails
 
@@ -51,7 +54,7 @@ class ChatbotController < ApplicationController
   def parse_sets(msg)
     counter = 0
     FETCH_SETS.each do |fetch_set|
-      if matches = ordered_tokens_exist?(msg, fetch_set)
+      if matches = ordered_tokens_exist?(msg, fetch_set, true)
         return "fetch set #{counter} with matches #{matches}"
       else
         counter += 1
@@ -72,15 +75,14 @@ class ChatbotController < ApplicationController
   def ordered_tokens_exist?(msg, tokens, strict = false)
     matches = []
     if strict
+      temp_tokens = tokens.clone
       msg.each do |msg_token|
-        temp_tokens = tokens.clone
-        byebug
         if temp_tokens.first.include? msg_token
           temp_tokens.shift
           matches << msg_token
         end
         if temp_tokens.empty?
-          matches
+          return matches
         end
       end
       false
