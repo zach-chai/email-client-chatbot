@@ -3,13 +3,50 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .demo {
+  padding: 0 !important;
+  margin: 0 !important;
 
-  ul {
+  .emails-wrapper {
+    padding: 0;
+    margin: 0;
+
+    .email-list-wrapper {
+      padding: 0;
+      margin: 0;
+      height: 400px;
+
+      #email-list {
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+        height: auto;
+      }
+    }
+  }
+
+  #chatbot-messages {
+    padding: 0;
+    margin: 0;
     list-style-type: none;
     height: auto;
   }
 
-  .email-list {
-    height: 400px;
+  .input-wrapper {
+    padding: 0;
+    margin: 0;
+
+    #chatbot-message {
+      width: 100%;
+    }
   }
+
+  .submit-wrapper {
+    padding: 0;
+    margin: 0;
+
+    #chatbot-submit {
+      width: 100%;
+    }
+  }
+
 }

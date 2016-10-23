@@ -1,24 +1,42 @@
 <div class="page-wrapper demo col-md-12">
-  <div class="row">
-    <div class="email-list col-md-3">
+  <div class="emails-wrapper col-md-9">
+    <div class="email-list-wrapper col-md-4">
       <ul class="list-group" id="email-list">
-        <% @emails.each do |email| %>
-          <li class="list-group-item"><%= email.subject %></li>
-        <% end %>
       </ul>
     </div>
     <div class="col-md-6">
-      email here
+      <div id="email-wrapper">
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>Sender</td>
+              <td id="email-sender"></td>
+            </tr>
+            <tr>
+              <td>Subject</td>
+              <td id="email-subject"></td>
+            </tr>
+            <tr>
+              <td colspan="2" id="email-body"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="col-md-3">
+  </div>
+  <div class="col-md-3">
+    <div class="row">
       <ul id="chatbot-messages">
         <li>Hello user</li>
       </ul>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3 offset-md-9">
-      <button id="chatbot-submit" class="btn btn-primary" type="button">Send</button>
+    <div class="row">
+      <div class="input-wrapper col-md-9">
+        <input class="form-control" id="chatbot-message" type="text" name="message"></input>
+      </div>
+      <div class="submit-wrapper col-md-3">
+        <button id="chatbot-submit" class="btn btn-default" type="button">Send</button>
+      </div>
     </div>
   </div>
 </div>

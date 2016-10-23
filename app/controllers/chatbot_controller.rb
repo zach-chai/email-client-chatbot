@@ -1,12 +1,12 @@
 class ChatbotController < ApplicationController
 
-  FETCH_TOKENS = ['fetch', 'get', 'find', 'open', 'show', 'view', 'give', 'read']
-  DELETE_TOKENS = ['delete', 'remove']
-  EMAIL_TYPES = ['unread', 'recent', 'today', 'yesterday', 'all']
+  FETCH_TOKENS = ['fetch', 'get', 'find', 'open', 'show', 'view', 'read']
+  DELETE_TOKENS = ['delete', 'destroy', 'remove']
+  EMAIL_TYPES = ['today', 'todays', 'today\'s' 'yesterday', 'yesterdays', 'yesterday\'s', 'all'] # implemented unread
 
   MSG_SET = [
     [['what'], ['emails'], EMAIL_TYPES],
-    [['you'], ['emails'], ['have']],
+    [FETCH_TOKENS, ['emails'], ['have']],
     [FETCH_TOKENS, ['emails'], EMAIL_TYPES],
     [FETCH_TOKENS, EMAIL_TYPES, ['emails']],
     [FETCH_TOKENS, ['emails']],
@@ -36,20 +36,35 @@ class ChatbotController < ApplicationController
     msg_set, type = get_msg_set(msg)
 
     if msg_set == false
-      render json: {msg: "I don't understand"}, status: :ok
+      @msg = "I don't understand"
       return
-    elsif msg_set < 5
-      if type.include? "today"
+    elsif msg_set < 5 # fetch emails
+      if (type & ["today", "todays", "today's"]).first
         @emails = Email.where("created_at > (?)", Time.now.beginning_of_day)
+        @msg = "You received #{@emails.count} emails today"
+      elsif (type & ["yesterday", "yesterdays", "yesterday's"]).first
+        @emails = Email.where("created_at > (?) and created_at < (?)", (Time.now - 1.days).beginning_of_day, (Time.now - 1.days).end_of_day)
+        @msg = "You received #{@emails.count} emails yesterday"
       else
         @emails = Email.all
+        @msg = "You have #{@emails.count} emails"
       end
-    elsif msg_set < 7
-      if type.include? "today"
+    elsif msg_set < 7 # delete emails
+      if (type & ["today", "todays", "today's"]).first
         Email.where("created_at > (?)", Time.now.beginning_of_day).destroy_all
+        @emails = Email.all
+        @msg = "Today's emails were deleted"
+      elsif (type & ["yesterday", "yesterdays", "yesterday's"]).first
+        Email.where("created_at > (?) and created_at < (?)", (Time.now - 1.days).beginning_of_day, (Time.now - 1.days).end_of_day).destroy_all
+        @emails = Email.all
+        @msg = "Yesterday's emails were deleted"
+      else
+        Email.destroy_all
+        @emails = Email.all
+        @msg = "All emails deleted"
       end
     else
-      render json: {msg: "I don't understand"}, status: :ok
+      @msg = "I don't understand"
       return
     end
   end
