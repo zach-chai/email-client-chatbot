@@ -33,39 +33,46 @@ class ChatbotController < ApplicationController
     msg = params[:message] || 'Hello user'
     msg = Textoken(msg.downcase).tokens
 
-    msg_set, type = get_msg_set(msg)
+    msg_set, type = get_msg_set(msg, true)
 
-    if msg_set == false
-      @msg = "I don't understand"
-      return
-    elsif msg_set < 5 # fetch emails
-      if (type & ["today", "todays", "today's"]).first
-        @emails = Email.where("created_at > (?)", Time.now.beginning_of_day)
-        @msg = "You received #{@emails.count} emails today"
-      elsif (type & ["yesterday", "yesterdays", "yesterday's"]).first
-        @emails = Email.where("created_at > (?) and created_at < (?)", (Time.now - 1.days).beginning_of_day, (Time.now - 1.days).end_of_day)
-        @msg = "You received #{@emails.count} emails yesterday"
+    if msg_set
+      if msg_set < 5 # fetch emails
+        if (type & ["today", "todays", "today's"]).first
+          @emails = Email.where("created_at > (?)", Time.now.beginning_of_day)
+          @msg = "You received #{@emails.count} emails today"
+        elsif (type & ["yesterday", "yesterdays", "yesterday's"]).first
+          @emails = Email.where("created_at > (?) and created_at < (?)", (Time.now - 1.days).beginning_of_day, (Time.now - 1.days).end_of_day)
+          @msg = "You received #{@emails.count} emails yesterday"
+        else
+          @emails = Email.all
+          @msg = "You have #{@emails.count} emails"
+        end
+      elsif msg_set < 7 # delete emails
+        if (type & ["today", "todays", "today's"]).first
+          Email.where("created_at > (?)", Time.now.beginning_of_day).destroy_all
+          @emails = Email.all
+          @msg = "Today's emails were deleted"
+        elsif (type & ["yesterday", "yesterdays", "yesterday's"]).first
+          Email.where("created_at > (?) and created_at < (?)", (Time.now - 1.days).beginning_of_day, (Time.now - 1.days).end_of_day).destroy_all
+          @emails = Email.all
+          @msg = "Yesterday's emails were deleted"
+        else
+          Email.destroy_all
+          @emails = Email.all
+          @msg = "All emails deleted"
+        end
       else
-        @emails = Email.all
-        @msg = "You have #{@emails.count} emails"
-      end
-    elsif msg_set < 7 # delete emails
-      if (type & ["today", "todays", "today's"]).first
-        Email.where("created_at > (?)", Time.now.beginning_of_day).destroy_all
-        @emails = Email.all
-        @msg = "Today's emails were deleted"
-      elsif (type & ["yesterday", "yesterdays", "yesterday's"]).first
-        Email.where("created_at > (?) and created_at < (?)", (Time.now - 1.days).beginning_of_day, (Time.now - 1.days).end_of_day).destroy_all
-        @emails = Email.all
-        @msg = "Yesterday's emails were deleted"
-      else
-        Email.destroy_all
-        @emails = Email.all
-        @msg = "All emails deleted"
+        @msg = "I don't understand"
+        return
       end
     else
-      @msg = "I don't understand"
-      return
+      msg_set, type = get_msg_set(msg, false)
+
+      @msg = if msg_set
+         "Suggestion: #{type.join ' '}"
+      else
+        "I don't understand"
+      end
     end
   end
 
@@ -75,10 +82,10 @@ class ChatbotController < ApplicationController
 
   private
 
-  def get_msg_set(msg)
+  def get_msg_set(msg, strict = false)
     counter = 0
     MSG_SET.each do |fetch_set|
-      if matches = ordered_tokens_exist?(msg, fetch_set, true)
+      if matches = ordered_tokens_exist?(msg, fetch_set, strict)
         return counter, matches
       else
         counter += 1
@@ -126,7 +133,7 @@ class ChatbotController < ApplicationController
 
   def ordered_tokens_exist?(msg, tokens, strict = false)
     matches = []
-    if strict
+    if !strict
       temp_tokens = tokens.clone
       msg.each do |msg_token|
         if temp_tokens.first.include? msg_token
@@ -139,17 +146,22 @@ class ChatbotController < ApplicationController
       end
       false
     else
-      tokens.each do |token_array|
-        if token_array.include? msg.first
-          matches << msg.shift
+      temp_tokens = tokens.clone
+      msg.each do |msg_token|
+        if temp_tokens.first.include? msg_token
+          temp_tokens.shift
+          matches << msg_token
+        else
+          return false
         end
       end
-      if matches.empty?
-        false
-      else
-        matches
+      if temp_tokens.empty?
+        return matches
       end
+      false
     end
+  rescue
+    false
   end
 
   def ordered_tokens_heuristic(msg, tokens, opts = {})
