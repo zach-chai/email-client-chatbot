@@ -1,6 +1,8 @@
-json.emails do
-  json.array!(@emails) do |email|
-    json.partial! 'emails/email', email: email
+if @emails
+  json.emails do
+    json.array!(@emails) do |email|
+      json.partial! 'emails/email', email: email
+    end
   end
 end
 
