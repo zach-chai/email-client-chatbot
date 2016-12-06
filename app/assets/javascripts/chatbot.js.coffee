@@ -35,6 +35,8 @@ send = ->
    $("#chatbot-messages").append "<li>You : #{msg}</li>"
    $.get "/chatbot/emails?message=#{msg}", (data) ->
       $("#chatbot-messages").append "<li>EmailBot : #{data.msg}</li>"
+      if data.suggestion
+        $("#chatbot-message").val(data.suggestion)
       if data.emails
         update_emails_list(data.emails)
 

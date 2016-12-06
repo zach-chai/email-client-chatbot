@@ -8,4 +8,5 @@ end
 
 if @msg
   json.msg @msg
+  json.suggestion @suggestion if @suggestion
 end

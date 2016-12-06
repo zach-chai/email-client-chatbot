@@ -65,6 +65,7 @@ class ChatbotController < ApplicationController
         else
           @emails = Email.all
           @msg = "Suggestion \"delete all emails\""
+          @suggestion = "delete all emails"
         end
       else
         @msg = "I don't understand"
@@ -74,7 +75,8 @@ class ChatbotController < ApplicationController
       msg_set, type = get_msg_set(msg, false)
 
       @msg = if msg_set
-         "Suggestion \"#{type.join ' '}\""
+        @suggestion = type.join ' '
+        "Suggestion \"#{type.join ' '}\""
       else
         "I don't understand"
       end
