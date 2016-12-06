@@ -23,18 +23,6 @@ class ChatbotController < ApplicationController
 
   # {message: "message to chatbot"}
 
-  # POST /chatbots
-  def message
-    msg = params[:message] || 'Hello user'
-    msg = Textoken(msg.downcase).tokens
-
-    # @res = parse_rules msg
-    @res = parse_sets msg
-    # @res = "#{@res}: #{ordered_tokens_heuristic(msg, [FETCH_TOKENS, EMAIL_TYPES])}"
-
-    @res
-  end
-
   def emails
     msg = params[:message] || 'Hello user'
     msg = Textoken(msg.downcase).tokens
@@ -84,17 +72,13 @@ class ChatbotController < ApplicationController
       end
     else
       msg_set, type = get_msg_set(msg, false)
-      
+
       @msg = if msg_set
-         "Suggestion: #{type.join ' '}"
+         "Suggestion \"#{type.join ' '}\""
       else
         "I don't understand"
       end
     end
-  end
-
-  def test
-
   end
 
   private
@@ -109,18 +93,6 @@ class ChatbotController < ApplicationController
       end
     end
     false
-  end
-
-  def parse_sets(msg)
-    counter = 0
-    MSG_SET.each do |fetch_set|
-      if matches = ordered_tokens_exist?(msg, fetch_set, true)
-        return "fetch set #{counter} with matches #{matches}"
-      else
-        counter += 1
-      end
-    end
-    msg
   end
 
   def ordered_tokens_exist?(msg, tokens, strict = false)
@@ -174,17 +146,4 @@ class ChatbotController < ApplicationController
     return msg[beg_index..end_index].join, skip
   end
 
-  def ordered_tokens_heuristic(msg, tokens, opts = {})
-    tokens_length = tokens.length
-    msg.each do |msg_token|
-      if tokens.first.include? msg_token
-        tokens = tokens.delete(0)
-      end
-      if tokens.nil?
-        tokens = []
-        break
-      end
-    end
-    (tokens_length - tokens.length).to_f / tokens_length.to_f
-  end
 end
