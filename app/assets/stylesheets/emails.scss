@@ -24,6 +24,10 @@
         list-style-type: none;
         height: auto;
 
+        .list-group-item:hover {
+          background-color: lightgray;
+        }
+
         .selected {
           background-color: lightgray;
         }
@@ -42,6 +46,8 @@
     height: 100%;
     margin-top: -40px;
     padding-top: 45px;
+    padding-left: 10px;
+    padding-right: 10px;
 
     #chatbot-messages {
       padding: 0;

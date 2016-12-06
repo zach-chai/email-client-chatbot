@@ -15,7 +15,7 @@ class ChatbotController < ApplicationController
     [FETCH_TOKENS, ['emails'], ['from']], # expecting email address
     [['search'], ['for'], ['emails'], ['from']], # expecting email address
     # [['search'], ['for']], # expecting string to search subject and body
-    [DELETE_TOKENS, ['email']],
+    [DELETE_TOKENS, ['emails']],
     [DELETE_TOKENS, EMAIL_TYPES, ['emails']],
     [DELETE_TOKENS, ['emails'], ['from']] # expecting email address
   ]
@@ -64,7 +64,7 @@ class ChatbotController < ApplicationController
           @msg = "All emails from #{type.last} were deleted"
         else
           @emails = Email.all
-          @msg = "You have #{@emails.count} emails"
+          @msg = "Suggestion \"delete all emails\""
         end
       else
         @msg = "I don't understand"
