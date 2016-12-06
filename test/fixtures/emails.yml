@@ -21,3 +21,60 @@ email3:
   sender: campus_recruiting@carleton.ca
   body: You're invited to attend Microsoft's upcoming Tech Talk and Coding Competition!
   created_at: <%= Time.now - 1.days %>
+
+email4:
+  subject: Register for SOAR
+  sender: vpstudents@carleton.ca
+  created_at: <%= Time.now %>
+  body: "
+    SOAR is the annual Student Leadership Conference for student leaders at Carleton University. At SOAR, students are challenged and inspired to develop their leadership skills through informative and interactive workshops and presentations.</br></br>
+    Registration is $10 + HST and includes lunch and all conference materials. This year, SOAR will take place on Saturday, January 21st, 2017. Register today as spaces are limited!</br></br>
+    The Student Experience Office will be announcing the keynote speaker for SOAR shortly, so stay tuned!"
+
+email5:
+  subject: Community Academic Expo
+  sender: vpstudents@carleton.ca
+  created_at: <%= Time.now - 1.days %>
+  body: "
+    Carleton Connects: Building and Celebrating Community Partnerships is a three day community-academic expo celebrating the 75th anniversary of Carleton University by showcasing our rich history of community partnerships.</br></br>
+    The Expo program committee invites proposals for discussion panels, presentations, workshops, exhibitions, performances, and/or posters from students, staff, faculty, and/or instructors working with community partners in the areas of:</br></br>
+    sustainability,</br></br>
+    accessibility,</br></br>
+    global citizenship, or</br></br>
+    Indigenous communities and knowledges.</br></br>
+    We are especially interested in proposals that bring to the fore voices and experiences from multiple constituents, including, for example, community partners, students, and faculty members.</br></br>
+    The event will include opportunities for participants to share knowledge about current partnerships; to develop new partnerships and networks; to share and reflect on experiences in community-campus partnerships; to celebrate student engagement in community partnerships; and to explore directions for the next 25 years of community-engaged teaching, research and service.</br></br>
+    Deadline for Submission is February 27, 2017.</br></br>
+    For more information, please visit www.cu75.ca/expo/call-for-proposals.</br></br>"
+
+email6:
+  subject: 2016 Co-op Awards
+  sender: vpstudents@carleton.ca
+  created_at: <%= Time.now - 1.days %>
+  body: "
+    Nominations are now open for the 2016 Carleton University Co-op Student and Employer of the Year Awards! Co-op students who worked between Jan.1 and Dec.31, 2016 are eligible for nomination by either their employer, co-op faculty advisor, or co-op student advisor! Co-op students are also encouraged to nominate their employer. If you’ve had a great co-op work term, consider submitting a nomination!</br></br>
+    Deadline for nominations is Wednesday, December 7th, 2016. The winners will be announced at a special awards ceremony in March 2016. The successful student will receive recognition and a $500 award. For detailed information about the awards and nomination forms, visit carleton.ca/co-op/co-op-awards."
+
+email7:
+  subject: CCSS Coffee Social Today
+  sender: john@carleton.ca
+  body: "
+  The next CCSS Undergraduate Coffee Social will take place today at 2:30pm. Everyone is welcome!
+  "
+  created_at: <%= Time.now - 2.days %>
+
+email8:
+  subject: CCSS Coffee Social Today
+  sender: john@carleton.ca
+  body: "
+  The next CCSS Undergraduate Coffee Social will take place today at 2:30pm. Everyone is welcome!
+  "
+  created_at: <%= Time.now - 3.days %>
+
+email9:
+  subject: CCSS Coffee Social Today
+  sender: john@carleton.ca
+  body: "
+  The next CCSS Undergraduate Coffee Social will take place today at 2:30pm. Everyone is welcome!
+  "
+  created_at: <%= Time.now - 5.days %>

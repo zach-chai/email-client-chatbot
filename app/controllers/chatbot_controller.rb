@@ -10,12 +10,14 @@ class ChatbotController < ApplicationController
     [FETCH_TOKENS, ['emails'], EMAIL_TYPES],
     [FETCH_TOKENS, EMAIL_TYPES, ['emails']],
     [FETCH_TOKENS, ['emails']],
+    [FETCH_TOKENS, ['my'], ['emails']],
     [FETCH_TOKENS, ['emails'], ['from'], EMAIL_TYPES],
     [FETCH_TOKENS, ['emails'], ['from']], # expecting email address
     [['search'], ['for'], ['emails'], ['from']], # expecting email address
     # [['search'], ['for']], # expecting string to search subject and body
     [DELETE_TOKENS, ['email']],
-    [DELETE_TOKENS, EMAIL_TYPES, ['emails']]
+    [DELETE_TOKENS, EMAIL_TYPES, ['emails']],
+    [DELETE_TOKENS, ['emails'], ['from']] # expecting email address
   ]
   #TODO detect if email address and fetch those emails
 
@@ -41,7 +43,7 @@ class ChatbotController < ApplicationController
     msg_set, type = get_msg_set(msg, true)
 
     if msg_set
-      if msg_set < 8 # fetch emails
+      if msg_set < 9 # fetch emails
         if (type & ["today", "todays"]).first
           @emails = Email.where("created_at > (?)", Time.now.beginning_of_day)
           @msg = "You received #{@emails.count} emails today"
@@ -55,7 +57,7 @@ class ChatbotController < ApplicationController
           @emails = Email.all
           @msg = "You have #{@emails.count} emails"
         end
-      elsif msg_set < 10 # delete emails
+      elsif msg_set < 12 # delete emails
         if (type & ["today"]).first
           Email.where("created_at > (?)", Time.now.beginning_of_day).destroy_all
           @emails = Email.all
@@ -68,6 +70,10 @@ class ChatbotController < ApplicationController
           Email.destroy_all
           @emails = Email.all
           @msg = "All emails deleted"
+        elsif (type & ["from"]).first
+          Email.where(sender: type.last).destroy_all
+          @emails = Email.all
+          @msg = "All emails from #{type.last} were deleted"
         else
           @emails = Email.all
           @msg = "You have #{@emails.count} emails"
@@ -78,7 +84,7 @@ class ChatbotController < ApplicationController
       end
     else
       msg_set, type = get_msg_set(msg, false)
-
+      
       @msg = if msg_set
          "Suggestion: #{type.join ' '}"
       else

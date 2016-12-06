@@ -3,33 +3,54 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .demo {
+  height: 100%;
   padding: 0 !important;
   margin: 0 !important;
 
   .emails-wrapper {
+    height: 100%;
     padding: 0;
     margin: 0;
 
     .email-list-wrapper {
       padding: 0;
       margin: 0;
-      height: 400px;
+      height: 100%;
+      overflow-y: auto;
 
       #email-list {
         padding: 0;
         margin: 0;
         list-style-type: none;
         height: auto;
+
+        .selected {
+          background-color: lightgray;
+        }
       }
+    }
+
+    .email-panel {
+      height: 100%;
+      overflow-y: auto;
+      border-left: 1px solid lightgray;
+      border-right: 1px solid lightgray;
     }
   }
 
-  #chatbot-messages {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-    height: auto;
+  .chatbot-messages-wrapper {
+    height: 100%;
+    margin-top: -40px;
+    padding-top: 45px;
+
+    #chatbot-messages {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+      height: auto;
+    }
   }
+
 
   .input-wrapper {
     padding: 0;
@@ -49,4 +70,8 @@
     }
   }
 
+}
+
+.full-height {
+  height: 100%;
 }
