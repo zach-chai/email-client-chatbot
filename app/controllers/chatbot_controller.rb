@@ -23,7 +23,7 @@ class ChatbotController < ApplicationController
 
   # {message: "message to chatbot"}
 
-  def emails
+  def message
     msg = params[:message] || 'Hello user'
     msg = Textoken(msg.downcase).tokens
     msg.delete_if { |m| m == "'" || m == "s" }

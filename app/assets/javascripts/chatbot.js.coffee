@@ -33,7 +33,8 @@ setup = ->
 send = ->
    msg = $("#chatbot-message").val()
    $("#chatbot-messages").append "<li>You : #{msg}</li>"
-   $.get "/chatbot/emails?message=#{msg}", (data) ->
+   $.post "/chatbot/message", {message: msg}, (data) ->
+      $("#chatbot-messages .placeholder").remove();
       $("#chatbot-messages").append "<li>EmailBot : #{data.msg}</li>"
       if data.suggestion
         $("#chatbot-message").val(data.suggestion)
