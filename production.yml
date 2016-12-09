@@ -1,0 +1,12 @@
+version: '2'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    environment:
+      SECRET_KEY_BASE: dfjigi12fg3g4fg
+    volumes:
+      - './db/production:/usr/src/app/db/production'
+    ports:
+      - 80:80
