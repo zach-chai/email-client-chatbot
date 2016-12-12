@@ -46,11 +46,11 @@ class ChatbotController < ApplicationController
           @msg = "You have #{@emails.count} emails"
         end
       elsif msg_set < 12 # delete emails
-        if (type & ["today"]).first
+        if (type & ["today", "todays"]).first
           Email.where("created_at > (?)", Time.now.beginning_of_day).destroy_all
           @emails = Email.all
           @msg = "Today's emails were deleted"
-        elsif (type & ["yesterday"]).first
+        elsif (type & ["yesterday", "yesterdays"]).first
           Email.where("created_at > (?) and created_at < (?)", (Time.now - 1.days).beginning_of_day, (Time.now - 1.days).end_of_day).destroy_all
           @emails = Email.all
           @msg = "Yesterday's emails were deleted"
